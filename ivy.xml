@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+  <info organisation="myta" module="myta" revision="0.0.1" />
+
+  <configurations>
+    <conf name="default" />
+    <conf name="build" extends="default" visibility="private" />
+    <conf name="run" extends="default" visibility="public" />
+    <conf name="test" extends="default" visibility="private" />
+  </configurations>
+
+  <dependencies>
+  
+    <dependency org="junit" name="junit" rev="3.8" conf="test->default;build->default" /> 
+    <dependency org="javax.servlet" name="servlet-api" conf="build->default" rev="2.5" />
+    <dependency org="javax.persistence" name="persistence-api" rev="1.0" />
+    <dependency org="log4j" name="log4j" rev="1.2.14" />
+    <dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.9.2" />
+    
+  </dependencies>
+
+</ivy-module> 

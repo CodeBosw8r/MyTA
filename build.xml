@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="jar" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<taskdef name="xpath" classname="net.uworks.andariel.XPath" />
+	<property name="module.name" value="vwm" />
+
+	<target name="init">
+		<xpath file="ivy.xml" expression="//info/@revision" outputproperty="module.version" />
+
+		<delete dir="work" />
+		<mkdir dir="work" />
+
+		<property name="lib.dir" value="work/lib" />
+
+	</target>
+
+	<target name="retrieve" depends="init">
+		<ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" conf="*" type="jar" />
+		<path id="build.classpath">
+			<fileset dir="${lib.dir}/build">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+	</target>
+
+	<target name="compile">
+		
+        <mkdir dir="bin"/>
+        <javac srcdir="src" destdir="bin"/>
+
+		<!-- when using ivy -->
+		<!--
+		<mkdir dir="work/bin" />
+		<javac srcdir="src" destdir="work/bin" classpathref="build.classpath">
+			<compilerarg value="-Xlint"/>
+		</javac>
+		-->
+	</target>
+	
+	<target name="build" depends="init,retrieve,compile">
+		<!-- copy non-java resources from src to bin -->
+		<copy todir="work/bin">
+			<fileset dir="src" casesensitive="yes">
+			  <exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+		
+	</target>
+
+
+	<target name="testall" depends="init,retrieve,compile,build">
+
+		<junit fork="true" printsummary="yes" haltonfailure="no">
+			<classpath refid="build.classpath" />
+			<classpath path="work/bin" />
+			<formatter type="plain" usefile="false" />
+
+			<batchtest>
+				<fileset dir="work/bin">
+					<include name="**/*Test.class" />
+					<exclude name="**/AllTests.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+
+	</target>
+
+	<target name="jar" depends="init,compile">
+		<mkdir dir="dist" />
+
+		<manifest file="MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Specification-Title" value="Grip VWM package" />
+			<attribute name="Specification-Version" value="${module.version}" />
+			<attribute name="Specification-Vendor" value="Grip MultiMedia" />
+			<attribute name="Implementation-Title" value="Grip VWM package" />
+			<attribute name="Implementation-Version" value="${module.version}" />
+			<attribute name="Implementation-Vendor" value="Grip MultiMedia" />
+		</manifest>
+
+		<jar destfile="dist/grip-${module.name}-${module.version}.jar" basedir="bin" manifest="MANIFEST.MF">
+
+			<exclude name="**/*Test.class" />
+			<exclude name="**/*.png" />
+			<exclude name="**/*.jpg" />
+			<exclude name="**/*.svg" />
+
+		</jar>
+
+		<delete file="MANIFEST.MF" />
+
+	</target>
+
+	<target name="deliver" depends="init,retrieve,compile">
+		<mkdir dir="dist" />
+		<ivy:deliver deliverpattern="dist/[artifact]-[revision].[ext]" pubrevision="${module.version}" />
+	</target>
+
+	<target name="publish" depends="init,deliver,jar">
+		<ivy:publish resolver="local" deliverivypattern="dist/[artifact]-[revision].[ext]" artifactspattern="dist/grip-[module]-[revision].[ext]" pubrevision="${module.version}">
+		</ivy:publish>
+	</target>
+
+</project>

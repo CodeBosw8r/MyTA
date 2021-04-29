@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Post a new Message</title>
+</head>
+<body>
+
+	<form method="post">
+	
+		<dl>
+			<dt>From:</dt>
+			<dd>
+				<input type="text" name="from">
+			</dd>
+			<dt>To:</dt>
+			<dd>
+				<input type="text" name="to">
+			</dd>
+			<dt>Cc:</dt>
+			<dd>
+				<input type="text" name="cc">
+			</dd>
+			<dt>Bcc:</dt>
+			<dd>
+				<input type="text" name="bcc">
+			</dd>
+			<dt>Subject:</dt>
+			<dd>
+				<input type="text" name="subject">
+			</dd>
+			<dt>Html body:</dt>
+			<dd>
+				<textarea name="htmlBody" cols="76" rows="10"></textarea>
+			</dd>
+			<dt>Text body:</dt>
+			<dd>
+				<textarea name="textBody" cols="76" rows="10"></textarea>
+			</dd>
+			<dt>Extra header:</dt>
+			<dd>
+				<input type="text" name="extraHeader">
+			</dd>
+			<dt>Return path:</dt>
+			<dd>
+				<input type="text" name="returnPath">
+			</dd>
+			<dd>
+				<input type="submit" value="Submit">
+			</dd>
+		</dl>
+		
+	</form>
+	
+	<script>
+	
+		window.addEventListener('DOMContentLoaded', (event) => {
+		    const form = document.querySelector('form');
+		    initForm(form);
+		});
+	
+	   function initForm(form) {
+	       
+	       form.addEventListener('submit', onSubmitForm);
+	       
+	   }
+	   
+	   function onSubmitForm(e) {
+	       
+	       console.log('form submitted', e);
+	       
+	       e.preventDefault();
+	       
+	       const form = e.target;
+	       
+	       const message = {};
+	       
+	       message.from = null;
+	       message.recipients = [];
+	       message.subject = null;
+	       message.htmlBody = null;
+	       message.textBody = null;
+	       message.returnPath = null;
+	       message.extraHeaders = [];
+	       
+	       for (let i = 0; i < form.elements.length; i++) {
+	           
+	           const element = form.elements[i];
+               const elementName = element.name;
+               const elementType = element.type;
+               
+               if ((elementName !== null) && (elementType !== null)) {
+
+                   const elementName = element.name;
+                   const value = (element.type == 'textarea') ? element.value : (element.type == 'text' ? element.value : null);
+                   
+                   if ((value != null) && (value != '')) {
+                       
+                       console.log(elementName + ':', value);
+                      
+                       if ((elementName == 'to') || (elementName == 'cc') || (elementName == 'bcc')) {
+                           
+	                       const recipient = {};
+	                       recipient.type = elementName;
+	                       recipient.email = value;
+	                       
+	                       message.recipients.push(recipient);
+                              
+                       } else if (elementName == 'from') {
+                           
+                           message.from = value; 
+                           
+                       } else if (elementName == 'subject') {
+                           
+                           message.subject = value;
+
+                       } else if (elementName == 'htmlBody') {
+                           
+                           message.htmlBody = value;
+
+                       } else if (elementName == 'textBody') {
+                           
+                           message.textBody = value;
+
+                       } else if (elementName == 'returnPath') {
+                           
+                           message.returnPath = value;
+                           
+                       } else if (elementName == 'extraHeader') {
+
+                           message.extraHeaders.push(value);
+
+                       }
+                       
+                   }
+
+               }
+	           
+	       }
+	       
+	       console.log('message:', message);
+	       
+	   }
+	
+	</script>
+
+</body>
+</html>

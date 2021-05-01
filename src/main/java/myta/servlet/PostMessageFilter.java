@@ -17,8 +17,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import myta.message.model.Message;
@@ -192,7 +190,7 @@ public class PostMessageFilter implements Filter {
 
     }
 
-    public Object parseJsonRequestBody(InputStream inputStream) throws JsonParseException, JsonMappingException, IOException {
+    public Object parseJsonRequestBody(InputStream inputStream) throws IOException {
 
         Object obj = null;
 

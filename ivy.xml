@@ -11,7 +11,7 @@
 
   <dependencies>
   
-    <dependency org="junit" name="junit" rev="3.8" conf="test->default;build->default" /> 
+    <dependency org="org.junit.jupiter" name="junit-jupiter" rev="5.7.1"/>
     <dependency org="javax.servlet" name="servlet-api" conf="build->default" rev="2.5" />
     <dependency org="javax.persistence" name="persistence-api" rev="1.0" />
     <dependency org="log4j" name="log4j" rev="1.2.14" />

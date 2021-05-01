@@ -138,6 +138,12 @@
 	           
 	       }
 	       
+	       var xmlhttp = new XMLHttpRequest(); 
+	       var theUrl = document.location;
+	       xmlhttp.open("POST", theUrl);
+	       xmlhttp.setRequestHeader("Content-Type", "application/json");
+	       xmlhttp.send(JSON.stringify(message));
+	       
 	       console.log('message:', message);
 	       
 	   }

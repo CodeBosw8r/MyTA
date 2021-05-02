@@ -8,36 +8,9 @@ public class EmailAddress {
 
     public EmailAddress(String email, String name) {
 
-        /*
-         * if (name == null) {
-         * 
-         * $ltPos = strpos(email, '<'); $gtPos = ($ltPos !== false) ?
-         * strpos(email, '>', strpos(email, '<')) : false;
-         * 
-         * if (($ltPos !== false) && ($gtPos !== false)) {
-         * 
-         * name = trim(substr(email, 0, $ltPos - 1)); email = trim(substr(email,
-         * $ltPos + 1, ($gtPos - $ltPos) - 1));
-         * 
-         * }
-         * 
-         * }
-         * 
-         * if (name != '') {
-         * 
-         * name = trim(name);
-         * 
-         * if ((substr(name, 0, 1) == '"') && (substr(name, -1) == '"')) {
-         * 
-         * $cleanName = trim(substr(name, 1, -1)); name = $cleanName;
-         * 
-         * }
-         * 
-         * }
-         * 
-         * $this->email = email; $this->name = name;
-         * 
-         */
+        this.email = email;
+        this.name = name;
+
     }
 
     public String getEmail() {

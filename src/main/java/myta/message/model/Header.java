@@ -1,10 +1,14 @@
 package myta.message.model;
 
-public class Header {
+import java.io.Serializable;
 
-    private String name;
+public class Header implements Serializable {
 
-    private String value;
+    private static final long serialVersionUID = 5299391230670261560L;
+
+    private String            name;
+
+    private String            value;
 
     public Header(String name, String value) {
         super();

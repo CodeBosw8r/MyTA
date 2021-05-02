@@ -1,22 +1,33 @@
 package myta.message.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Message {
+public class Message implements Serializable {
 
-    private List<Recipient>    recipients;
+    private static final long serialVersionUID = 8644725397834654327L;
 
-    private String             subject;
+    private EmailAddress      from;
 
-    private String             htmlBody;
+    private List<Recipient>   recipients;
 
-    private String             textBody;
+    private String            subject;
 
-    private List<EmailAddress> replyTo;
+    private String            htmlBody;
 
-    private List<Header>       headers;
+    private String            textBody;
 
-    private String             returnPath;
+    private List<Header>      extraHeaders;
+
+    private String            returnPath;
+
+    public EmailAddress getFrom() {
+        return from;
+    }
+
+    public void setFrom(EmailAddress from) {
+        this.from = from;
+    }
 
     public List<Recipient> getRecipients() {
         return recipients;
@@ -50,20 +61,12 @@ public class Message {
         this.textBody = textBody;
     }
 
-    public List<EmailAddress> getReplyTo() {
-        return replyTo;
+    public List<Header> getExtraHeaders() {
+        return extraHeaders;
     }
 
-    public void setReplyTo(List<EmailAddress> replyTo) {
-        this.replyTo = replyTo;
-    }
-
-    public List<Header> getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(List<Header> headers) {
-        this.headers = headers;
+    public void setExtraHeaders(List<Header> extraHeaders) {
+        this.extraHeaders = extraHeaders;
     }
 
     public String getReturnPath() {

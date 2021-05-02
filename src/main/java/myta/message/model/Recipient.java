@@ -1,10 +1,14 @@
 package myta.message.model;
 
-public class Recipient {
+import java.io.Serializable;
 
-    private RecipientType recipientType;
+public class Recipient implements Serializable {
 
-    private EmailAddress  emailAddress;
+    private static final long serialVersionUID = 4906944885986379385L;
+
+    private RecipientType     recipientType;
+
+    private EmailAddress      emailAddress;
 
     public Recipient(RecipientType recipientType, EmailAddress emailAddress) {
         super();

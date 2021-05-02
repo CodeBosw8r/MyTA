@@ -1,10 +1,14 @@
 package myta.message.model;
 
-public class EmailAddress {
+import java.io.Serializable;
 
-    private String email;
+public class EmailAddress implements Serializable {
 
-    private String name;
+    private static final long serialVersionUID = 8136581631661777702L;
+
+    private String            email;
+
+    private String            name;
 
     public EmailAddress(String email, String name) {
 
@@ -27,6 +31,13 @@ public class EmailAddress {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+
+        return this.name != null ? (this.name + " <" + this.email + ">") : this.email;
+
     }
 
 }

@@ -10,6 +10,7 @@ import javax.mail.internet.InternetAddress;
 
 import myta.exception.MessageParseException;
 import myta.message.model.EmailAddress;
+import myta.message.model.Header;
 import myta.message.model.Message;
 import myta.message.model.Recipient;
 import myta.message.model.RecipientType;
@@ -18,24 +19,123 @@ public class IncomingMessageParser {
 
     public Message parseMessageRequest(Map<String, Object> requestMap) throws MessageParseException {
 
-        return null;
+        EmailAddress from = this.parseFrom(requestMap);
+        List<Recipient> recipients = this.parseRecipients(requestMap);
+        String subject = this.parseSubject(requestMap);
+        String textBody = this.parseTextBody(requestMap);
+        String htmlBody = this.parseHtmlBody(requestMap);
+        List<Header> extraHeaders = this.parseExtraHeaders(requestMap);
+        String returnPath = this.parseReturnPath(requestMap);
+
+        if (recipients == null) {
+
+            throw new MessageParseException("No recipients in message");
+
+        }
+
+        if ((textBody == null) && (htmlBody == null)) {
+
+            throw new MessageParseException("Either textBody or htmlBody must be set");
+
+        }
+
+        Message message = new Message();
+        message.setFrom(from);
+        message.setRecipients(recipients);
+        message.setSubject(subject);
+        message.setTextBody(textBody);
+        message.setHtmlBody(htmlBody);
+        message.setReturnPath(returnPath);
+        message.setExtraHeaders(extraHeaders);
+
+        return message;
 
     }
 
-    public Collection<Recipient> parseRecipients(Map<String, Object> requestMap) throws MessageParseException {
+    public List<Recipient> parseRecipients(Map<String, Object> requestMap) throws MessageParseException {
 
-        Collection<Recipient> recipients = null;
+        List<Recipient> recipients = null;
 
         if (requestMap != null) {
 
+            Collection<Recipient> recipientsTo = null;
+            Collection<Recipient> recipientsCc = null;
+            Collection<Recipient> recipientsBcc = null;
+            int totalRecipients = 0;
+
             if (requestMap.containsKey("recipients")) {
 
-            } else {
+                Object recipientsObject = requestMap.get("recipients");
 
-                Collection<Recipient> recipientsTo = null;
-                Collection<Recipient> recipientsCc = null;
-                Collection<Recipient> recipientsBcc = null;
-                int totalRecipients = 0;
+                if (recipientsObject instanceof List) {
+
+                    @SuppressWarnings("unchecked")
+                    List<Object> recipientsList = (List<Object>) recipientsObject;
+
+                    for (Object recipientObject : recipientsList) {
+
+                        if (recipientObject instanceof Map) {
+
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> recipientMap = (Map<String, Object>) recipientObject;
+
+                            Recipient parsedRecipient = this.parseRecipient(recipientMap);
+
+                            if (parsedRecipient != null) {
+
+                                if (parsedRecipient.getRecipientType().equals(RecipientType.TO)) {
+
+                                    totalRecipients += 1;
+
+                                    if (recipientsTo == null) {
+                                        recipientsTo = new ArrayList<Recipient>(1);
+                                    }
+
+                                    recipientsTo.add(parsedRecipient);
+
+                                } else if (parsedRecipient.getRecipientType().equals(RecipientType.CC)) {
+
+                                    totalRecipients += 1;
+
+                                    if (recipientsCc == null) {
+                                        recipientsCc = new ArrayList<Recipient>(1);
+                                    }
+
+                                    recipientsCc.add(parsedRecipient);
+
+                                } else if (parsedRecipient.getRecipientType().equals(RecipientType.BCC)) {
+
+                                    totalRecipients += 1;
+
+                                    if (recipientsBcc == null) {
+                                        recipientsBcc = new ArrayList<Recipient>(1);
+                                    }
+
+                                    recipientsBcc.add(parsedRecipient);
+
+                                }
+
+                            } else {
+
+                                throw new MessageParseException("Could not parse recipient");
+
+                            }
+
+                        } else {
+
+                            throw new MessageParseException("Unexpected recipients type, expected map");
+
+                        }
+
+                    }
+
+                } else {
+
+                    throw new MessageParseException("Unexpected recipients type, expected list");
+
+                }
+
+            } else {
 
                 if (requestMap.containsKey("to")) {
 
@@ -124,27 +224,27 @@ public class IncomingMessageParser {
 
                 }
 
-                if (totalRecipients > 0) {
+            }
 
-                    recipients = new ArrayList<Recipient>(totalRecipients);
+            if (totalRecipients > 0) {
 
-                    if (recipientsTo != null) {
+                recipients = new ArrayList<Recipient>(totalRecipients);
 
-                        recipients.addAll(recipientsTo);
+                if (recipientsTo != null) {
 
-                    }
+                    recipients.addAll(recipientsTo);
 
-                    if (recipientsCc != null) {
+                }
 
-                        recipients.addAll(recipientsCc);
+                if (recipientsCc != null) {
 
-                    }
+                    recipients.addAll(recipientsCc);
 
-                    if (recipientsBcc != null) {
+                }
 
-                        recipients.addAll(recipientsBcc);
+                if (recipientsBcc != null) {
 
-                    }
+                    recipients.addAll(recipientsBcc);
 
                 }
 
@@ -152,13 +252,117 @@ public class IncomingMessageParser {
 
         }
 
+        return recipients;
+
+    }
+
+    private String parseSubject(Map<String, Object> requestMap) {
+
+        String subject = this.getStringValue(requestMap, "subject");
+
+        return subject;
+
+    }
+
+    private String parseTextBody(Map<String, Object> requestMap) {
+
+        String subject = this.getStringValue(requestMap, "textBody");
+
+        return subject;
+
+    }
+
+    private String parseHtmlBody(Map<String, Object> requestMap) {
+
+        String subject = this.getStringValue(requestMap, "htmlBody");
+
+        return subject;
+
+    }
+
+    private EmailAddress parseFrom(Map<String, Object> requestMap) throws MessageParseException {
+
+        EmailAddress from = null;
+
+        String fromValue = this.getStringValue(requestMap, "from");
+
+        if (fromValue != null) {
+
+            EmailAddress emailAddress = this.parseEmailAddress(fromValue);
+
+            if (emailAddress != null) {
+
+                from = emailAddress;
+
+            }
+
+        } else {
+
+            throw new MessageParseException("No from field in message");
+
+        }
+
+        return from;
+
+    }
+
+    private String getStringValue(Map<String, Object> requestMap, String key) {
+
+        String value = null;
+
+        if ((requestMap != null) && requestMap.containsKey(key) && (requestMap.get(key) != null)) {
+
+            value = requestMap.get(key).toString();
+
+        }
+
+        return value;
+
+    }
+
+    public List<Header> parseExtraHeaders(Map<String, Object> requestMap) throws MessageParseException {
+
+        List<Header> extraHeaders = null;
+
+        if ((requestMap != null) && requestMap.containsKey("extraHeaders") && (requestMap.get("extraHeaders") != null)) {
+
+        }
+
+        return extraHeaders;
+
+    }
+
+    public Header parseHeader(String headerValue) throws MessageParseException {
+
         return null;
 
     }
 
-    public Collection<EmailAddress> parseRecipientEmailAddresses(Object recipientValue) throws MessageParseException {
+    public String parseReturnPath(Map<String, Object> requestMap) throws MessageParseException {
 
-        Collection<EmailAddress> emailAddresses = null;
+        String returnPath = null;
+
+        String returnPathParam = this.getStringValue(requestMap, "returnPath");
+
+        if (returnPathParam != null) {
+
+            EmailAddress parsedEmailAddress = this.parseEmailAddress(returnPathParam);
+
+            if (parsedEmailAddress != null) {
+
+                returnPath = parsedEmailAddress.getEmail();
+
+            }
+
+        }
+
+        return returnPath;
+
+    }
+
+    public List<EmailAddress> parseRecipientEmailAddresses(Object recipientValue) throws MessageParseException {
+
+        List<EmailAddress> emailAddresses = null;
 
         if (recipientValue instanceof String) {
 
@@ -181,11 +385,17 @@ public class IncomingMessageParser {
 
                 if (recipientPart != null) {
 
-                    Collection<EmailAddress> parsedAddresses = this.parseRecipientEmailAddresses(recipientPart);
+                    List<EmailAddress> parsedAddresses = this.parseRecipientEmailAddresses(recipientPart);
 
                     if (parsedAddresses != null) {
 
-                        emailAddresses = parsedAddresses;
+                        if (emailAddresses == null) {
+
+                            emailAddresses = new ArrayList<EmailAddress>(recipientList.size());
+
+                        }
+
+                        emailAddresses.addAll(parsedAddresses);
 
                     }
 

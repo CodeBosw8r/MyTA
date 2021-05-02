@@ -3,7 +3,6 @@ package myta.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,12 +13,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 class RequestMessageParserTest {
-
-    public void testParseSimpleValidMessage() {
-
-        fail("Not implemented");
-
-    }
 
     @Test
     public void testLoadMessageRequest() throws IOException {

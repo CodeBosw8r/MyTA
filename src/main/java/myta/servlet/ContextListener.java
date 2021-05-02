@@ -15,7 +15,9 @@ public class ContextListener implements ServletContextListener {
 
         ServletContext servletContext = servletContextEvent.getServletContext();
 
-        IncomingMessageQueueManager incomingMessageQueueManager = new IncomingMessageQueueManager();
+        int queueSize = 1000;
+
+        IncomingMessageQueueManager incomingMessageQueueManager = new IncomingMessageQueueManager(queueSize);
 
         servletContext.setAttribute("incomingMessageQueueManager", incomingMessageQueueManager);
 

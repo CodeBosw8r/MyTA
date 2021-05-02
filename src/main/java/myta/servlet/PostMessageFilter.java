@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.Filter;
@@ -16,27 +17,30 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
 import myta.message.model.Message;
+import myta.queue.model.IncomingMessageQueueEntry;
+import myta.service.IncomingMessageParser;
 import myta.service.IncomingMessageQueueManager;
 
 public class PostMessageFilter implements Filter {
 
     private IncomingMessageQueueManager incomingMessageQueueManager;
 
+    private IncomingMessageParser       incomingMessageParser;
+
     @SuppressWarnings("unchecked")
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
-        // TODO Auto-generated method stub
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        // HttpServletResponse httpServletResponse = (HttpServletResponse)
-        // servletResponse;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
         boolean doRedirect = false;
-        boolean showExpiryForm = false;
+        boolean showPostMessageForm = false;
 
         // make sure this is only done using post method
         if (httpServletRequest.getMethod().equals("POST")) {
@@ -62,19 +66,23 @@ public class PostMessageFilter implements Filter {
                         } catch (Exception e) {
 
                             // show error
+                            int statusCode = 400; // BAD REQUEST
+                            this.sendHttpExceptionResponse(httpServletResponse, statusCode, e);
 
                         }
 
                         if (parsedMessage != null) {
 
                             // enqueue message
+
+                            Date dateTimeReceived = new Date();
+
+                            IncomingMessageQueueEntry queueEntry = new IncomingMessageQueueEntry(dateTimeReceived, parsedMessage);
+
                             IncomingMessageQueueManager incomingMessageQueueManager = this.getIncomingMessageQueueManager();
+                            incomingMessageQueueManager.enqueueMessage(queueEntry);
 
-                            if (incomingMessageQueueManager != null) {
-
-                                incomingMessageQueueManager.enqueueMessage(parsedMessage);
-
-                            }
+                            httpServletResponse.setStatus(202); // ACCEPTED
 
                         }
 
@@ -85,6 +93,11 @@ public class PostMessageFilter implements Filter {
             } else {
 
                 // show error
+
+                Exception exception = new Exception("Empty request");
+
+                int statusCode = 400; // BAD REQUEST
+                this.sendHttpExceptionResponse(httpServletResponse, statusCode, exception);
 
             }
 
@@ -101,7 +114,7 @@ public class PostMessageFilter implements Filter {
 
             } else {
 
-                showExpiryForm = true;
+                showPostMessageForm = true;
 
             }
 
@@ -120,21 +133,21 @@ public class PostMessageFilter implements Filter {
             //
             // }
 
-        } else if (showExpiryForm) {
+        } else if (showPostMessageForm) {
 
-            this.showPostMessageForm(servletResponse);
+            this.showPostMessageForm(httpServletResponse);
 
         }
 
     }
 
-    public void showPostMessageForm(ServletResponse servletResponse) throws IOException {
+    public void showPostMessageForm(HttpServletResponse httpServletResponse) throws IOException {
 
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("myta/servlet/postMessageForm.html");
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
 
-        Writer output = servletResponse.getWriter();
+        Writer output = httpServletResponse.getWriter();
 
         String line = reader.readLine();
         while (line != null) {
@@ -147,15 +160,18 @@ public class PostMessageFilter implements Filter {
         inputStream.close();
     }
 
-    @Override
-    public void destroy() {
-        // TODO Auto-generated method stub
+    public void sendHttpExceptionResponse(HttpServletResponse httpServletResponse, int statusCode, Exception exception) throws IOException {
+
+        httpServletResponse.sendError(statusCode, exception.getMessage());
 
     }
 
     @Override
+    public void destroy() {
+    }
+
+    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // TODO Auto-generated method stub
 
         ServletContext servletContext = filterConfig.getServletContext();
         Object incomingMessageQueueManagerObject = servletContext.getAttribute("incomingMessageQueueManager");
@@ -164,11 +180,15 @@ public class PostMessageFilter implements Filter {
 
             if (incomingMessageQueueManagerObject instanceof IncomingMessageQueueManager) {
 
-                this.incomingMessageQueueManager = (IncomingMessageQueueManager) incomingMessageQueueManagerObject;
+                IncomingMessageQueueManager incomingMessageQueueManager = (IncomingMessageQueueManager) incomingMessageQueueManagerObject;
+                this.setIncomingMessageQueueManager(incomingMessageQueueManager);
 
             }
 
         }
+
+        IncomingMessageParser incomingMessageParser = new IncomingMessageParser();
+        this.setIncomingMessageParser(incomingMessageParser);
 
     }
 
@@ -208,9 +228,15 @@ public class PostMessageFilter implements Filter {
 
         if (objectMap != null) {
 
-            // check required fields
+            IncomingMessageParser messageParser = this.getIncomingMessageParser();
 
-            // check valid email addresses
+            message = messageParser.parseMessageRequest(objectMap);
+
+            if (message == null) {
+
+                throw new Exception("Empty response from message parser");
+
+            }
 
         }
 
@@ -222,6 +248,18 @@ public class PostMessageFilter implements Filter {
 
         return this.incomingMessageQueueManager;
 
+    }
+
+    public void setIncomingMessageQueueManager(IncomingMessageQueueManager incomingMessageQueueManager) {
+        this.incomingMessageQueueManager = incomingMessageQueueManager;
+    }
+
+    public IncomingMessageParser getIncomingMessageParser() {
+        return this.incomingMessageParser;
+    }
+
+    public void setIncomingMessageParser(IncomingMessageParser incomingMessageParser) {
+        this.incomingMessageParser = incomingMessageParser;
     }
 
 }

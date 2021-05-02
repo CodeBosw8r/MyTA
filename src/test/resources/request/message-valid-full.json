@@ -1,0 +1,25 @@
+{
+	"from": "from@example.com",
+	"recipients": [
+		{
+			"type": "to",
+			"email": "Firstname Lastname <to@example.com>"
+		},
+		{
+			"type": "cc",
+			"email": "cc@example.com"
+		},
+		{
+			"type": "bcc",
+			"email": "bcc@example.com"
+		}
+	],
+	"subject": "Test subject",
+	"htmlBody": "This is the <b>html</b> body",
+	"textBody": "This is the text body",
+	"returnPath": "bounces@example.com",
+	"extraHeaders": [
+        "Date: Sun, 02 May 2021 17:09:48 GMT",
+		"Reply-To: replyto@example.com"
+	]
+}

@@ -540,4 +540,26 @@ public class IncomingMessageParser {
 
     }
 
+    public List<EmailAddress> parseReplyToAddresses(Map<String, Object> requestMap) throws MessageParseException {
+
+        List<EmailAddress> replyToAddresses = null;
+
+        if (requestMap != null) {
+
+            if (requestMap.containsKey("replyTo")) {
+
+                Object replyToValue = requestMap.get("replyTo");
+
+            }
+
+        }
+
+        if (replyToAddresses == null) {
+            replyToAddresses = new ArrayList<EmailAddress>(0);
+        }
+
+        return replyToAddresses;
+
+    }
+
 }

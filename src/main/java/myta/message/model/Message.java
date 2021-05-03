@@ -5,21 +5,23 @@ import java.util.List;
 
 public class Message implements Serializable {
 
-    private static final long serialVersionUID = 8644725397834654327L;
+    private static final long  serialVersionUID = 3528943017570062648L;
 
-    private EmailAddress      from;
+    private EmailAddress       from;
 
-    private List<Recipient>   recipients;
+    private List<Recipient>    recipients;
 
-    private String            subject;
+    private String             subject;
 
-    private String            htmlBody;
+    private String             htmlBody;
 
-    private String            textBody;
+    private String             textBody;
 
-    private List<Header>      extraHeaders;
+    private List<EmailAddress> replyToAddresses;
 
-    private String            returnPath;
+    private List<Header>       extraHeaders;
+
+    private String             returnPath;
 
     public EmailAddress getFrom() {
         return from;
@@ -59,6 +61,14 @@ public class Message implements Serializable {
 
     public void setTextBody(String textBody) {
         this.textBody = textBody;
+    }
+
+    public List<EmailAddress> getReplyToAddresses() {
+        return replyToAddresses;
+    }
+
+    public void setReplyToAddresses(List<EmailAddress> replyToAddresses) {
+        this.replyToAddresses = replyToAddresses;
     }
 
     public List<Header> getExtraHeaders() {

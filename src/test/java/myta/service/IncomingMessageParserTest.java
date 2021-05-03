@@ -145,6 +145,13 @@ class IncomingMessageParserTest {
         assertEquals("This is the text body", message.getTextBody());
         assertEquals("This is the <b>html</b> body", message.getHtmlBody());
 
+        assertNotNull(message.getReplyToAddresses());
+        assertEquals(2, message.getReplyToAddresses().size());
+        assertEquals("foo", message.getReplyToAddresses().get(0).getEmail());
+        assertEquals("foo", message.getReplyToAddresses().get(0).getName());
+        assertEquals("foo", message.getReplyToAddresses().get(1).getEmail());
+        assertNull(message.getReplyToAddresses().get(1).getName());
+
         assertNotNull(message.getExtraHeaders());
         assertEquals(99, message.getExtraHeaders().size());
 
@@ -544,6 +551,25 @@ class IncomingMessageParserTest {
             assertNull(emailAddress);
 
         }
+
+    }
+
+    @Test
+    public void testParseReplyToAddressesString() throws MessageParseException {
+
+        IncomingMessageParser parser = new IncomingMessageParser();
+
+        Map<String, Object> requestMap = null;
+
+        List<EmailAddress> replyToAddresses = parser.parseReplyToAddresses(requestMap);
+
+        assertNotNull(replyToAddresses);
+        assertEquals(0, replyToAddresses.size());
+
+    }
+
+    @Test
+    public void testParseReplyToAddressesList() {
 
     }
 

@@ -21,10 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import myta.core.Engine;
 import myta.message.model.Message;
 import myta.queue.model.IncomingMessageQueueEntry;
+import myta.queue.service.IncomingMessageQueueManager;
 import myta.service.IncomingMessageParser;
-import myta.service.IncomingMessageQueueManager;
 
 public class PostMessageFilter implements Filter {
 
@@ -174,21 +175,16 @@ public class PostMessageFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
 
         ServletContext servletContext = filterConfig.getServletContext();
-        Object incomingMessageQueueManagerObject = servletContext.getAttribute("incomingMessageQueueManager");
 
-        if (incomingMessageQueueManagerObject != null) {
+        Object engineObject = servletContext.getAttribute("engine");
 
-            if (incomingMessageQueueManagerObject instanceof IncomingMessageQueueManager) {
+        if ((engineObject != null) && (engineObject instanceof Engine)) {
 
-                IncomingMessageQueueManager incomingMessageQueueManager = (IncomingMessageQueueManager) incomingMessageQueueManagerObject;
-                this.setIncomingMessageQueueManager(incomingMessageQueueManager);
-
-            }
-
+            Engine engine = (Engine) engineObject;
+            this.setIncomingMessageQueueManager(engine.getIncomingMessageQueueManager());
         }
 
-        IncomingMessageParser incomingMessageParser = new IncomingMessageParser();
-        this.setIncomingMessageParser(incomingMessageParser);
+        this.incomingMessageParser = new IncomingMessageParser();
 
     }
 

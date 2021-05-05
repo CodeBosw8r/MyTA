@@ -4,11 +4,15 @@ import java.io.Serializable;
 
 public class EmailAddress implements Serializable {
 
-    private static final long serialVersionUID = 8136581631661777702L;
+    private static final long serialVersionUID = -3501245274026547861L;
 
     private String            email;
 
     private String            name;
+
+    public EmailAddress(String email) {
+        this(email, null);
+    }
 
     public EmailAddress(String email, String name) {
 

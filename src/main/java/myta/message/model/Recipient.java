@@ -10,6 +10,12 @@ public class Recipient implements Serializable {
 
     private EmailAddress      emailAddress;
 
+    public Recipient(RecipientType recipientType, String email) {
+        super();
+        this.recipientType = recipientType;
+        this.emailAddress = new EmailAddress(email);
+    }
+
     public Recipient(RecipientType recipientType, EmailAddress emailAddress) {
         super();
         this.recipientType = recipientType;
@@ -30,6 +36,13 @@ public class Recipient implements Serializable {
 
     public void setEmailAddress(EmailAddress emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    @Override
+    public String toString() {
+
+        return this.recipientType.toString() + ": " + this.emailAddress.toString();
+
     }
 
 }

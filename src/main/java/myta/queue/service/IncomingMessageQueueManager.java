@@ -1,4 +1,4 @@
-package myta.service;
+package myta.queue.service;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;

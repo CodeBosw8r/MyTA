@@ -18,8 +18,6 @@ public class IncomingMessageProcessor {
 
     private final Engine engine;
 
-    private static int   idCounter = 0;
-
     public IncomingMessageProcessor(Engine engine) {
 
         this.engine = engine;
@@ -86,22 +84,4 @@ public class IncomingMessageProcessor {
 
     }
 
-    public static String getUniqueMessageIDValue(Session session) {
-
-        String suffix = null;
-
-        InternetAddress addr = InternetAddress.getLocalAddress(session);
-        if (addr != null)
-            suffix = addr.getAddress();
-        else {
-            suffix = "myta@localhost"; // worst-case default
-        }
-
-        StringBuffer s = new StringBuffer();
-
-        // Unique string is <hashcode>.<id>.<currentTime>.JavaMail.<suffix>
-        s.append(s.hashCode()).append('.').append(idCounter++).append(System.currentTimeMillis()).append('.').append("MyTA.").append(suffix);
-        return s.toString();
-
-    }
 }

@@ -20,6 +20,7 @@ import org.junit.platform.commons.annotation.Testable;
 
 import myta.exception.MessageParseException;
 import myta.message.model.EmailAddress;
+import myta.message.model.Header;
 import myta.message.model.Message;
 import myta.message.model.Recipient;
 import myta.message.model.RecipientType;
@@ -147,15 +148,18 @@ class IncomingMessageParserTest {
 
         assertNotNull(message.getReplyToAddresses());
         assertEquals(2, message.getReplyToAddresses().size());
-        assertEquals("foo", message.getReplyToAddresses().get(0).getEmail());
-        assertEquals("foo", message.getReplyToAddresses().get(0).getName());
-        assertEquals("foo", message.getReplyToAddresses().get(1).getEmail());
-        assertNull(message.getReplyToAddresses().get(1).getName());
+        assertEquals("replyto@example.com", message.getReplyToAddresses().get(0).getEmail());
+        assertEquals("Firstname Lastname", message.getReplyToAddresses().get(0).getName());
+        assertEquals("reply2@example.com", message.getReplyToAddresses().get(1).getEmail());
+        assertEquals(null, message.getReplyToAddresses().get(1).getName());
 
         assertNotNull(message.getExtraHeaders());
-        assertEquals(99, message.getExtraHeaders().size());
+        assertEquals(2, message.getExtraHeaders().size());
 
-        // assertNotNull(message.get
+        assertEquals("Date", message.getExtraHeaders().get(0).getName());
+        assertEquals("Sun, 02 May 2021 17:09:48 GMT", message.getExtraHeaders().get(0).getValue());
+        assertEquals("Message-ID", message.getExtraHeaders().get(1).getName());
+        assertEquals("<somemessageid@example.com>", message.getExtraHeaders().get(1).getValue());
 
     }
 
@@ -566,10 +570,130 @@ class IncomingMessageParserTest {
         assertNotNull(replyToAddresses);
         assertEquals(0, replyToAddresses.size());
 
+        requestMap = new LinkedHashMap<String, Object>();
+        requestMap.put("replyTo", "info@example.com");
+
+        replyToAddresses = parser.parseReplyToAddresses(requestMap);
+
+        assertNotNull(replyToAddresses);
+        assertEquals(1, replyToAddresses.size());
+        assertEquals("info@example.com", replyToAddresses.get(0).getEmail());
+        assertEquals(null, replyToAddresses.get(0).getName());
+
+        requestMap.put("replyTo", "<info@example.com>");
+
+        replyToAddresses = parser.parseReplyToAddresses(requestMap);
+
+        assertNotNull(replyToAddresses);
+        assertEquals(1, replyToAddresses.size());
+        assertEquals("info@example.com", replyToAddresses.get(0).getEmail());
+        assertEquals(null, replyToAddresses.get(0).getName());
+
+        requestMap.put("replyTo", "Firstname Lastname <info@example.com>");
+
+        replyToAddresses = parser.parseReplyToAddresses(requestMap);
+
+        assertNotNull(replyToAddresses);
+        assertEquals(1, replyToAddresses.size());
+        assertEquals("info@example.com", replyToAddresses.get(0).getEmail());
+        assertEquals("Firstname Lastname", replyToAddresses.get(0).getName());
+
     }
 
     @Test
-    public void testParseReplyToAddressesList() {
+    public void testParseReplyToAddressesList() throws MessageParseException {
+
+        IncomingMessageParser parser = new IncomingMessageParser();
+
+        Map<String, Object> requestMap = null;
+
+        List<EmailAddress> replyToAddresses = parser.parseReplyToAddresses(requestMap);
+
+        assertNotNull(replyToAddresses);
+        assertEquals(0, replyToAddresses.size());
+
+        List<String> replyToList = new ArrayList<String>();
+
+        requestMap = new LinkedHashMap<String, Object>();
+        requestMap.put("replyTo", replyToList);
+
+        replyToAddresses = parser.parseReplyToAddresses(requestMap);
+
+        assertNotNull(replyToAddresses);
+        assertEquals(0, replyToAddresses.size());
+
+        replyToList.add("info@example.com");
+
+        replyToAddresses = parser.parseReplyToAddresses(requestMap);
+
+        assertNotNull(replyToAddresses);
+        assertEquals(1, replyToAddresses.size());
+        assertEquals("info@example.com", replyToAddresses.get(0).getEmail());
+        assertEquals(null, replyToAddresses.get(0).getName());
+
+        replyToList.add("<other@example.com>");
+
+        replyToAddresses = parser.parseReplyToAddresses(requestMap);
+
+        assertNotNull(replyToAddresses);
+        assertEquals(2, replyToAddresses.size());
+        assertEquals("info@example.com", replyToAddresses.get(0).getEmail());
+        assertEquals(null, replyToAddresses.get(0).getName());
+        assertEquals("other@example.com", replyToAddresses.get(1).getEmail());
+        assertEquals(null, replyToAddresses.get(1).getName());
+
+        replyToList.add("Firstname Lastname <next@example.com>");
+
+        replyToAddresses = parser.parseReplyToAddresses(requestMap);
+
+        assertNotNull(replyToAddresses);
+        assertEquals(3, replyToAddresses.size());
+        assertEquals("info@example.com", replyToAddresses.get(0).getEmail());
+        assertEquals(null, replyToAddresses.get(0).getName());
+        assertEquals("other@example.com", replyToAddresses.get(1).getEmail());
+        assertEquals(null, replyToAddresses.get(1).getName());
+        assertEquals("next@example.com", replyToAddresses.get(2).getEmail());
+        assertEquals("Firstname Lastname", replyToAddresses.get(2).getName());
+
+    }
+
+    @Test
+    public void testParseExtraHeadersMapList() throws MessageParseException {
+
+        Map<String, Object> messageRequest = new LinkedHashMap<String, Object>();
+
+        IncomingMessageParser parser = new IncomingMessageParser();
+
+        List<Header> headers = parser.parseExtraHeaders(messageRequest);
+
+        assertNotNull(headers);
+        assertEquals(0, headers.size());
+
+        List<Object> headerList = new ArrayList<Object>();
+
+        Map<String, Object> header = new LinkedHashMap<String, Object>(2);
+        header.put("name", "Date");
+        header.put("value", "Sun, 02 May 2021 17:09:48 GMT");
+
+        headerList.add(header);
+
+        header = new LinkedHashMap<String, Object>(2);
+        header.put("name", "Message-ID");
+        header.put("value", "<somemessageid@example.com>");
+
+        headerList.add(header);
+
+        messageRequest.put("extraHeaders", headerList);
+
+        headers = parser.parseExtraHeaders(messageRequest);
+
+        assertNotNull(headers);
+        assertEquals(2, headers.size());
+
+        assertEquals("Date", headers.get(0).getName());
+        assertEquals("Sun, 02 May 2021 17:09:48 GMT", headers.get(0).getValue());
+        assertEquals("Message-ID", headers.get(1).getName());
+        assertEquals("<somemessageid@example.com>", headers.get(1).getValue());
 
     }
 

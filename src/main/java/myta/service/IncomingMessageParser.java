@@ -24,6 +24,7 @@ public class IncomingMessageParser {
         String subject = this.parseSubject(requestMap);
         String textBody = this.parseTextBody(requestMap);
         String htmlBody = this.parseHtmlBody(requestMap);
+        List<EmailAddress> replyToAddresses = this.parseReplyToAddresses(requestMap);
         List<Header> extraHeaders = this.parseExtraHeaders(requestMap);
         String returnPath = this.parseReturnPath(requestMap);
 
@@ -45,8 +46,9 @@ public class IncomingMessageParser {
         message.setSubject(subject);
         message.setTextBody(textBody);
         message.setHtmlBody(htmlBody);
-        message.setReturnPath(returnPath);
+        message.setReplyToAddresses(replyToAddresses);
         message.setExtraHeaders(extraHeaders);
+        message.setReturnPath(returnPath);
 
         return message;
 
@@ -326,6 +328,69 @@ public class IncomingMessageParser {
 
         if ((requestMap != null) && requestMap.containsKey("extraHeaders") && (requestMap.get("extraHeaders") != null)) {
 
+            Object extraHeadersObject = requestMap.get("extraHeaders");
+
+            if (extraHeadersObject instanceof List) {
+
+                @SuppressWarnings("unchecked")
+                List<Object> extraHeadersList = (List<Object>) extraHeadersObject;
+
+                for (Object extraHeaderObject : extraHeadersList) {
+
+                    if (extraHeaderObject instanceof Map) {
+
+                        @SuppressWarnings("unchecked")
+                        Map<String, Object> extraHeaderMap = (Map<String, Object>) extraHeaderObject;
+
+                        if (extraHeaderMap.containsKey("name") && (extraHeaderMap.get("name") != null)) {
+
+                            if (extraHeaderMap.containsKey("value") && (extraHeaderMap.get("value") != null)) {
+
+                                String name = extraHeaderMap.get("name").toString();
+                                String value = extraHeaderMap.get("value").toString();
+
+                                Header header = new Header(name, value);
+
+                                if (extraHeaders == null) {
+
+                                    extraHeaders = new ArrayList<Header>(extraHeadersList.size());
+
+                                }
+
+                                extraHeaders.add(header);
+
+                            } else {
+
+                                throw new MessageParseException("Could not parse extra header: value expected");
+
+                            }
+
+                        } else {
+
+                            throw new MessageParseException("Could not parse extra header: name expected");
+
+                        }
+
+                    } else {
+
+                        throw new MessageParseException("Unexpected recipients type, expected map");
+
+                    }
+
+                }
+
+            } else {
+
+                throw new MessageParseException("Unexpected recipients type, expected list");
+
+            }
+
+        }
+
+        if (extraHeaders == null) {
+
+            extraHeaders = new ArrayList<Header>(0);
+
         }
 
         return extraHeaders;
@@ -549,6 +614,54 @@ public class IncomingMessageParser {
             if (requestMap.containsKey("replyTo")) {
 
                 Object replyToValue = requestMap.get("replyTo");
+
+                if (replyToValue != null) {
+
+                    if (replyToValue instanceof String) {
+
+                        EmailAddress parsedEmailAddress = this.parseEmailAddress(replyToValue.toString());
+
+                        if (parsedEmailAddress != null) {
+
+                            replyToAddresses = new ArrayList<EmailAddress>(1);
+                            replyToAddresses.add(parsedEmailAddress);
+
+                        }
+
+                    } else if (replyToValue instanceof List) {
+
+                        @SuppressWarnings("unchecked")
+                        List<Object> replyToList = (List<Object>) replyToValue;
+
+                        if (replyToList.size() > 0) {
+
+                            for (Object replyToListItem : replyToList) {
+
+                                if ((replyToListItem != null) && (replyToListItem instanceof String)) {
+
+                                    EmailAddress parsedEmailAddress = this.parseEmailAddress(replyToListItem.toString());
+
+                                    if (parsedEmailAddress != null) {
+
+                                        if (replyToAddresses == null) {
+
+                                            replyToAddresses = new ArrayList<EmailAddress>(replyToList.size());
+
+                                        }
+
+                                        replyToAddresses.add(parsedEmailAddress);
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
 
             }
 

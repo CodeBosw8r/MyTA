@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import myta.message.model.Message;
 import myta.queue.model.IncomingMessageQueueEntry;
+import myta.queue.service.IncomingMessageQueueManager;
 
 class IncomingMessageQueueManagerTest {
 

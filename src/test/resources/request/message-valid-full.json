@@ -23,7 +23,13 @@
 		"reply2@example.com"
 	],
 	"extraHeaders": [
-		"Date: Sun, 02 May 2021 17:09:48 GMT",
-		"Reply-To: replyto@example.com"
+		{
+			"name": "Date",
+			"value": "Sun, 02 May 2021 17:09:48 GMT"
+		},
+		{
+			"name": "Message-ID",
+			"value": "<somemessageid@example.com>"
+		}
 	]
 }

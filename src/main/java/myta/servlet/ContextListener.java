@@ -40,15 +40,34 @@ public class ContextListener implements ServletContextListener {
 
         }
 
+        if (env.containsKey("NUM_WORKERS") && (env.get("NUM_WORKERS") != null) && env.get("NUM_WORKERS").toString().matches("[1-9]{1}[0-9]{0,}")) {
+
+            params.put("numWorkers", env.get("NUM_WORKERS").toString());
+
+        }
+
         if (env.containsKey("queuesize") && (env.get("queuesize") != null) && env.get("queuesize").toString().matches("[1-9]{1}[0-9]{0,}")) {
 
             params.put("queueSize", env.get("queuesize").toString());
 
         }
 
+        if (env.containsKey("INCOMING_QUEUE_SIZE") && (env.get("INCOMING_QUEUE_SIZE") != null)
+                && env.get("INCOMING_QUEUE_SIZE").toString().matches("[1-9]{1}[0-9]{0,}")) {
+
+            params.put("queueSize", env.get("INCOMING_QUEUE_SIZE").toString());
+
+        }
+
         if (env.containsKey("relayhost") && (env.get("relayhost") != null) && !env.get("relayhost").equals("")) {
 
             params.put("relayHost", env.get("relayhost").toString());
+
+        }
+
+        if (env.containsKey("RELAY_HOST") && (env.get("RELAY_HOST") != null) && !env.get("RELAY_HOST").equals("")) {
+
+            params.put("relayHost", env.get("RELAY_HOST").toString());
 
         }
 

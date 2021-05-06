@@ -2,8 +2,8 @@ package myta.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import myta.config.model.EngineConfig;
 import myta.config.model.SmtpConfiguration;
 import myta.message.model.Message;
 import myta.queue.service.IncomingMessageQueueManager;
@@ -22,7 +22,7 @@ public class Engine {
 
     private List<IncomingMessageQueueProcessingThread> incomingMessageQueueProcessingThreads;
 
-    private SmtpConfiguration                          defaultRelayConfiguration;
+    private List<SmtpConfiguration>                    relayServers;
 
     private long                                       timeInitializeFinished;
 
@@ -32,33 +32,11 @@ public class Engine {
 
     }
 
-    public void initialize(Map<String, String> params) {
+    public void initialize(EngineConfig engineConfig) {
 
-        int queueSize = 1000;
-        int numWorkers = 2;
-        String relayHost = "localhost";
-
-        if (params != null) {
-
-            if (params.containsKey("numWorkers") && (params.get("numWorkers") != null) && params.get("numWorkers").toString().matches("[1-9]{1}[0-9]{0,}")) {
-
-                numWorkers = Integer.valueOf(params.get("numWorkers").toString());
-
-            }
-
-            if (params.containsKey("queueSize") && (params.get("queueSize") != null) && params.get("queueSize").toString().matches("[1-9]{1}[0-9]{0,}")) {
-
-                queueSize = Integer.valueOf(params.get("queueSize").toString());
-
-            }
-
-            if (params.containsKey("relayHost") && (params.get("relayHost") != null) && !params.get("relayHost").equals("")) {
-
-                relayHost = params.get("relayHost");
-
-            }
-
-        }
+        int queueSize = engineConfig.getIncomingMessageQueueSize();
+        int numWorkers = engineConfig.getNumWorkers();
+        this.relayServers = engineConfig.getRelayServers();
 
         IncomingMessageQueueManager incomingMessageQueueManager = new IncomingMessageQueueManager(queueSize);
         this.incomingMessageQueueManager = incomingMessageQueueManager;
@@ -78,9 +56,6 @@ public class Engine {
             incomingMessageQueueProcessingThread.start();
 
         }
-
-        this.defaultRelayConfiguration = new SmtpConfiguration();
-        this.defaultRelayConfiguration.setHost(relayHost);
 
         this.timeInitializeFinished = System.currentTimeMillis() / 1000;
         this.isInitialized = true;
@@ -135,9 +110,9 @@ public class Engine {
 
     }
 
-    public SmtpConfiguration getDefaultRelayConfiguration() {
+    public List<SmtpConfiguration> getRelayServers() {
 
-        return this.defaultRelayConfiguration;
+        return this.relayServers;
 
     }
 

@@ -2,6 +2,7 @@ package myta.service;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -16,11 +17,14 @@ import myta.mime.service.MessageComposer;
 
 public class IncomingMessageProcessor {
 
-    private final Engine engine;
+    private final Engine        engine;
+
+    private final AtomicInteger numMailsSent;
 
     public IncomingMessageProcessor(Engine engine) {
 
         this.engine = engine;
+        this.numMailsSent = new AtomicInteger();
 
     }
 
@@ -73,8 +77,12 @@ public class IncomingMessageProcessor {
             }
 
             // send the message
+
             try {
+
                 Transport.send(mimeMessage);
+                this.numMailsSent.incrementAndGet();
+
             } catch (MessagingException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -82,6 +90,10 @@ public class IncomingMessageProcessor {
 
         }
 
+    }
+
+    public int getNumMailsSent() {
+        return this.numMailsSent.get();
     }
 
 }

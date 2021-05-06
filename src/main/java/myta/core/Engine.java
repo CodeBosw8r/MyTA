@@ -24,6 +24,8 @@ public class Engine {
 
     private SmtpConfiguration                          defaultRelayConfiguration;
 
+    private long                                       timeInitializeFinished;
+
     public Engine() {
 
         this.isInitialized = false;
@@ -80,6 +82,7 @@ public class Engine {
         this.defaultRelayConfiguration = new SmtpConfiguration();
         this.defaultRelayConfiguration.setHost(relayHost);
 
+        this.timeInitializeFinished = System.currentTimeMillis() / 1000;
         this.isInitialized = true;
 
     }
@@ -144,6 +147,16 @@ public class Engine {
 
     public int getIncomingQueueSize() {
         return this.incomingMessageQueueManager.getQueueSize();
+    }
+
+    public int getUptime() {
+
+        long now = System.currentTimeMillis() / 1000;
+
+        int uptime = (int) (now - this.timeInitializeFinished);
+
+        return uptime;
+
     }
 
 }

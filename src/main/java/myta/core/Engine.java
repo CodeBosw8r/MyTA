@@ -149,6 +149,10 @@ public class Engine {
         return this.incomingMessageQueueManager.getQueueSize();
     }
 
+    public int getNumMailsSent() {
+        return this.incomingMessageProcessor.getNumMailsSent();
+    }
+
     public int getUptime() {
 
         long now = System.currentTimeMillis() / 1000;

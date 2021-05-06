@@ -4,6 +4,10 @@ public class SmtpConfiguration {
 
     private String host;
 
+    public SmtpConfiguration(String host) {
+        this.host = host;
+    }
+
     public String getHost() {
         return host;
     }

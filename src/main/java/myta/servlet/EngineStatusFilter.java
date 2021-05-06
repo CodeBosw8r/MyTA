@@ -145,7 +145,9 @@ public class EngineStatusFilter implements Filter {
         long maxMemory = Runtime.getRuntime().maxMemory();
         values.put("maxMemory", String.valueOf(maxMemory));
 
-        // TODO uptime
+        int uptime = engine.getUptime();
+        values.put("uptime", String.valueOf(uptime));
+
         // TODO num mails sent
         // TODO num mails failed
 

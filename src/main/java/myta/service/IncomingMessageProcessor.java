@@ -1,7 +1,9 @@
 package myta.service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.mail.MessagingException;
@@ -32,7 +34,17 @@ public class IncomingMessageProcessor {
 
         MessageComposer messageComposer = new MessageComposer();
 
-        SmtpConfiguration smtpConfiguration = this.engine.getDefaultRelayConfiguration();
+        List<SmtpConfiguration> relayServers = this.engine.getRelayServers();
+
+        int luckyNumber = 0;
+
+        if (relayServers.size() > 1) {
+
+            luckyNumber = new Random().nextInt(relayServers.size());
+
+        }
+
+        SmtpConfiguration smtpConfiguration = relayServers.get(luckyNumber);
 
         Properties props = new Properties();
         props.put("mail.smtp.host", smtpConfiguration.getHost());
@@ -81,6 +93,7 @@ public class IncomingMessageProcessor {
             try {
 
                 Transport.send(mimeMessage);
+
                 this.numMailsSent.incrementAndGet();
 
             } catch (MessagingException e) {

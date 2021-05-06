@@ -9,15 +9,27 @@ public class IncomingMessageQueueManager {
 
     private final BlockingQueue<IncomingMessageQueueEntry> queue;
 
-    public IncomingMessageQueueManager(int queueSize) {
+    private final int                                      queueMaxSize;
 
-        this.queue = new ArrayBlockingQueue<IncomingMessageQueueEntry>(queueSize, true);
+    public IncomingMessageQueueManager(int queueMaxSize) {
+
+        this.queue = new ArrayBlockingQueue<IncomingMessageQueueEntry>(queueMaxSize, true);
+        this.queueMaxSize = queueMaxSize;
 
     }
 
     public void enqueueMessage(IncomingMessageQueueEntry entry) {
 
-        this.queue.add(entry);
+        try {
+
+            this.queue.put(entry);
+
+        } catch (InterruptedException e) {
+
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+
+        }
 
     }
 
@@ -30,6 +42,12 @@ public class IncomingMessageQueueManager {
     public int getQueueSize() {
 
         return this.queue.size();
+
+    }
+
+    public int getQueueMaxSize() {
+
+        return this.queueMaxSize;
 
     }
 

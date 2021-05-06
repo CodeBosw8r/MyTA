@@ -12,6 +12,10 @@ import myta.service.IncomingMessageProcessor;
 
 public class Engine {
 
+    private boolean                                    isInitialized;
+
+    private boolean                                    isPaused;
+
     private IncomingMessageQueueManager                incomingMessageQueueManager;
 
     private IncomingMessageProcessor                   incomingMessageProcessor;
@@ -19,6 +23,12 @@ public class Engine {
     private List<IncomingMessageQueueProcessingThread> incomingMessageQueueProcessingThreads;
 
     private SmtpConfiguration                          defaultRelayConfiguration;
+
+    public Engine() {
+
+        this.isInitialized = false;
+
+    }
 
     public void initialize(Map<String, String> params) {
 
@@ -70,6 +80,24 @@ public class Engine {
         this.defaultRelayConfiguration = new SmtpConfiguration();
         this.defaultRelayConfiguration.setHost(relayHost);
 
+        this.isInitialized = true;
+
+    }
+
+    public boolean isInitialized() {
+        return this.isInitialized;
+    }
+
+    public boolean isPaused() {
+        return this.isPaused;
+    }
+
+    public void pause() {
+        this.isPaused = true;
+    }
+
+    public void unpause() {
+        this.isPaused = false;
     }
 
     public void shutdown() {
@@ -108,6 +136,14 @@ public class Engine {
 
         return this.defaultRelayConfiguration;
 
+    }
+
+    public int getNumWorkers() {
+        return this.incomingMessageQueueProcessingThreads.size();
+    }
+
+    public int getIncomingQueueSize() {
+        return this.incomingMessageQueueManager.getQueueSize();
     }
 
 }

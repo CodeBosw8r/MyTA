@@ -136,6 +136,11 @@ public class EngineStatusFilter implements Filter {
         int incomingQueueMaxSize = engine.getIncomingMessageQueueManager().getQueueMaxSize();
         values.put("incomingQueueMaxSize", String.valueOf(incomingQueueMaxSize));
 
+        int mailsSent = engine.getNumMailsSent();
+        values.put("mailsSent", String.valueOf(mailsSent));
+
+        // TODO num mails failed
+
         long freeMemory = Runtime.getRuntime().freeMemory();
         values.put("freeMemory", String.valueOf(freeMemory));
 
@@ -147,9 +152,6 @@ public class EngineStatusFilter implements Filter {
 
         int uptime = engine.getUptime();
         values.put("uptime", String.valueOf(uptime));
-
-        // TODO num mails sent
-        // TODO num mails failed
 
         return values;
 

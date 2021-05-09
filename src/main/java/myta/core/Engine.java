@@ -15,9 +15,11 @@ package myta.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import myta.config.model.EngineConfig;
 import myta.config.model.SmtpConfiguration;
+import myta.dkim.model.DkimKey;
 import myta.message.model.Message;
 import myta.queue.service.IncomingMessageQueueManager;
 import myta.queue.service.IncomingMessageQueueProcessingThread;
@@ -37,6 +39,8 @@ public class Engine {
 
     private List<SmtpConfiguration>                    relayServers;
 
+    private Map<String, DkimKey>                       dkimKeyMapping;
+
     private long                                       timeInitializeFinished;
 
     public Engine() {
@@ -50,6 +54,7 @@ public class Engine {
         int queueSize = engineConfig.getIncomingMessageQueueSize();
         int numWorkers = engineConfig.getNumWorkers();
         this.relayServers = engineConfig.getRelayServers();
+        this.dkimKeyMapping = engineConfig.getDkimKeyMapping();
 
         IncomingMessageQueueManager incomingMessageQueueManager = new IncomingMessageQueueManager(queueSize);
         this.incomingMessageQueueManager = incomingMessageQueueManager;
@@ -127,6 +132,10 @@ public class Engine {
 
         return this.relayServers;
 
+    }
+
+    public Map<String, DkimKey> getDkimKeyMapping() {
+        return this.dkimKeyMapping;
     }
 
     public int getNumWorkers() {

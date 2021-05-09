@@ -1,7 +1,11 @@
 package myta.config.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import myta.dkim.model.DkimKey;
 
 public class EngineConfig {
 
@@ -11,6 +15,8 @@ public class EngineConfig {
 
     private List<SmtpConfiguration> relayServers;
 
+    private Map<String, DkimKey>    dkimKeyMapping;
+
     public EngineConfig() {
 
         this.numWorkers = 2;
@@ -19,6 +25,9 @@ public class EngineConfig {
         SmtpConfiguration relayServer = new SmtpConfiguration("localhost");
         this.relayServers = new ArrayList<SmtpConfiguration>(1);
         this.relayServers.add(relayServer);
+
+        Map<String, DkimKey> dkimKeyMapping = new HashMap<String, DkimKey>();
+        this.dkimKeyMapping = dkimKeyMapping;
 
     }
 
@@ -44,6 +53,14 @@ public class EngineConfig {
 
     public void setRelayServers(List<SmtpConfiguration> relayServers) {
         this.relayServers = relayServers;
+    }
+
+    public Map<String, DkimKey> getDkimKeyMapping() {
+        return this.dkimKeyMapping;
+    }
+
+    public void setDkimKeyMapping(Map<String, DkimKey> dkimMapping) {
+        this.dkimKeyMapping = dkimMapping;
     }
 
 }

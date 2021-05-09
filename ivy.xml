@@ -16,8 +16,11 @@
         <dependency org="javax.servlet" name="servlet-api" conf="build->default" rev="2.5" />
         <dependency org="log4j" name="log4j" rev="1.2.14" />
         <dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.9.2" />
-        <dependency org="javax.mail" name="mail" rev="1.4.7" />
-
+        <dependency org="com.sun.mail" name="jakarta.mail" rev="2.0.1" />
+        <dependency org="net.markenwerk" name="utils-mail-dkim" rev="2.0.1" />
+        <dependency org="org.bouncycastle" name="bcpkix-jdk15on" rev="1.68" />
+        <dependency org="org.ini4j" name="ini4j" rev="0.5.4" />
+        
     </dependencies>
 
 </ivy-module> 

@@ -5,9 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import myta.exception.MessageParseException;
 import myta.message.model.EmailAddress;
 import myta.message.model.Header;

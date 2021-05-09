@@ -1,5 +1,6 @@
 package myta.servlet;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import javax.servlet.ServletContextListener;
 
 import myta.config.model.EngineConfig;
 import myta.config.model.SmtpConfiguration;
+import myta.config.service.EngineConfigIniLoader;
 import myta.core.Engine;
 
 public class ContextListener implements ServletContextListener {
@@ -32,6 +34,8 @@ public class ContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
 
         ServletContext servletContext = servletContextEvent.getServletContext();
+
+        java.security.Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
         EngineConfig engineConfig = new EngineConfig();
 
@@ -86,10 +90,37 @@ public class ContextListener implements ServletContextListener {
 
         }
 
+        if (env.containsKey("CONFIG_FILE") && (env.get("CONFIG_FILE") != null) && !env.get("CONFIG_FILE").equals("")) {
+
+            String configFileParam = env.get("CONFIG_FILE");
+
+            File configFile = new File(configFileParam);
+
+            if (configFile.exists()) {
+
+                EngineConfigIniLoader engineConfigIniLoader = new EngineConfigIniLoader();
+
+                EngineConfig loadedEngineConfig = engineConfigIniLoader.loadEngineConfig(configFileParam);
+
+                if (loadedEngineConfig != null) {
+
+                    if (loadedEngineConfig.getDkimKeyMapping() != null) {
+
+                        engineConfig.setDkimKeyMapping(loadedEngineConfig.getDkimKeyMapping());
+
+                    }
+
+                }
+
+            }
+
+        }
+
         Engine engine = new Engine();
         engine.initialize(engineConfig);
 
         servletContext.setAttribute("engine", engine);
 
     }
+
 }

@@ -11,13 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.mail.BodyPart;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
+import jakarta.mail.BodyPart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
 import myta.message.model.EmailAddress;
 import myta.message.model.Header;
 import myta.message.model.Recipient;
@@ -38,7 +37,7 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
@@ -59,7 +58,7 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
@@ -81,7 +80,7 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
@@ -103,7 +102,7 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
@@ -134,7 +133,7 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
@@ -166,7 +165,7 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
@@ -218,7 +217,7 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
@@ -270,7 +269,7 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
@@ -322,7 +321,7 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
@@ -365,7 +364,7 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
@@ -403,11 +402,10 @@ public class MessageComposerTest {
         Properties prop = new Properties();
         Session session = Session.getInstance(prop);
 
-        javax.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
+        jakarta.mail.Message mimeMessage = messageComposer.composeMimeMessage(session, message);
 
         assertNotNull(mimeMessage);
 
-        assertFalse(this.containsHeader(mimeMessage, "Date"));
         assertTrue(this.containsHeader(mimeMessage, "Message-ID"));
         assertNotEquals("<SOMEID@example.com>", this.getHeaderValue(mimeMessage, "Message-ID"));
 
@@ -418,7 +416,6 @@ public class MessageComposerTest {
 
         assertNotNull(mimeMessage);
 
-        assertFalse(this.containsHeader(mimeMessage, "Date"));
         assertTrue(this.containsHeader(mimeMessage, "Message-ID"));
         assertNotEquals("<SOMEID@example.com>", this.getHeaderValue(mimeMessage, "Message-ID"));
 
@@ -438,7 +435,7 @@ public class MessageComposerTest {
 
     }
 
-    public String getHeaderValue(javax.mail.Message mimeMessage, String headerName) {
+    public String getHeaderValue(jakarta.mail.Message mimeMessage, String headerName) {
 
         String headerValue = null;
 
@@ -459,7 +456,7 @@ public class MessageComposerTest {
 
     }
 
-    public String getHeaderValue(javax.mail.BodyPart bodyPart, String headerName) {
+    public String getHeaderValue(jakarta.mail.BodyPart bodyPart, String headerName) {
 
         String headerValue = null;
 
@@ -480,7 +477,7 @@ public class MessageComposerTest {
 
     }
 
-    public boolean containsHeader(javax.mail.Message mimeMessage, String headerName) {
+    public boolean containsHeader(jakarta.mail.Message mimeMessage, String headerName) {
 
         boolean containsHeader = false;
 
@@ -501,7 +498,7 @@ public class MessageComposerTest {
 
     }
 
-    public String getBodyValue(javax.mail.Message mimeMessage) {
+    public String getBodyValue(jakarta.mail.Message mimeMessage) {
 
         String bodyValue = null;
 
@@ -528,7 +525,7 @@ public class MessageComposerTest {
 
     }
 
-    public String getBodyValue(javax.mail.BodyPart bodyPart) {
+    public String getBodyValue(jakarta.mail.BodyPart bodyPart) {
 
         String bodyValue = null;
 
@@ -555,7 +552,7 @@ public class MessageComposerTest {
 
     }
 
-    public List<BodyPart> getMultiPartBodyParts(javax.mail.Message mimeMessage) {
+    public List<BodyPart> getMultiPartBodyParts(jakarta.mail.Message mimeMessage) {
 
         List<BodyPart> bodyParts = null;
 
@@ -570,9 +567,9 @@ public class MessageComposerTest {
 
         if (contentObject != null) {
 
-            if (contentObject instanceof javax.mail.internet.MimeMultipart) {
+            if (contentObject instanceof jakarta.mail.internet.MimeMultipart) {
 
-                javax.mail.internet.MimeMultipart multiPart = (javax.mail.internet.MimeMultipart) contentObject;
+                jakarta.mail.internet.MimeMultipart multiPart = (jakarta.mail.internet.MimeMultipart) contentObject;
                 int count = 0;
 
                 try {

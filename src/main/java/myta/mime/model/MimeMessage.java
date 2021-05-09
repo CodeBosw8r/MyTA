@@ -1,10 +1,10 @@
 package myta.mime.model;
 
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.internet.InternetAddress;
 
-public class MimeMessage extends javax.mail.internet.MimeMessage {
+public class MimeMessage extends jakarta.mail.internet.MimeMessage {
     Session            session;
     private static int id = 0;
 

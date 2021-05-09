@@ -4,15 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
-
+import jakarta.mail.Address;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.Session;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMultipart;
 import myta.message.model.EmailAddress;
 import myta.message.model.Header;
 import myta.message.model.Recipient;
@@ -21,7 +19,7 @@ import myta.mime.model.MimeMessage;
 
 public class MessageComposer {
 
-    public Message composeMimeMessage(Session session, myta.message.model.Message message) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage composeMimeMessage(Session session, myta.message.model.Message message) throws MessagingException, UnsupportedEncodingException {
 
         String textBody = message.getTextBody();
         String htmlBody = message.getHtmlBody();
@@ -90,19 +88,19 @@ public class MessageComposer {
 
                 if (recipients.size() > 0) {
 
-                    javax.mail.Message.RecipientType addRecipientType = null;
+                    jakarta.mail.Message.RecipientType addRecipientType = null;
 
                     if (recipientType.equals(RecipientType.TO)) {
 
-                        addRecipientType = javax.mail.Message.RecipientType.TO;
+                        addRecipientType = jakarta.mail.Message.RecipientType.TO;
 
                     } else if (recipientType.equals(RecipientType.CC)) {
 
-                        addRecipientType = javax.mail.Message.RecipientType.CC;
+                        addRecipientType = jakarta.mail.Message.RecipientType.CC;
 
                     } else if (recipientType.equals(RecipientType.BCC)) {
 
-                        addRecipientType = javax.mail.Message.RecipientType.BCC;
+                        addRecipientType = jakarta.mail.Message.RecipientType.BCC;
 
                     }
 

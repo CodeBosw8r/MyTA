@@ -21,7 +21,7 @@
 	</target>
 
 	<target name="retrieve" depends="init">
-		<ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" conf="*" type="jar" />
+		<ivy:retrieve pattern="${lib.dir}/[conf]/[artifact]-[revision].[ext]" conf="*" type="jar,bundle" />
 		<path id="build.classpath">
 			<fileset dir="${lib.dir}/build">
 				<include name="*.jar" />
@@ -110,6 +110,7 @@
     <target name="test" depends="test.junit.launcher, test.console.launcher" />
 	
     <target name="war" depends="compile,test">
+    	<delete file="build/dist/MyTA.war"/>
         <war destfile="build/dist/MyTA.war" webxml="src/main/webapp/WEB-INF/web.xml">
         	<!--
             <fileset dir="src/main/webapp/WebContent"/>

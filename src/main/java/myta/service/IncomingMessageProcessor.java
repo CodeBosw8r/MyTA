@@ -148,6 +148,7 @@ public class IncomingMessageProcessor {
         dkimSigner.setSigningAlgorithm(SigningAlgorithm.SHA256_WITH_RSA);
         dkimSigner.setLengthParam(true);
         dkimSigner.setCopyHeaderFields(false);
+        dkimSigner.setCheckDomainKey(false);
         return new DkimMessage(message, dkimSigner);
     }
 

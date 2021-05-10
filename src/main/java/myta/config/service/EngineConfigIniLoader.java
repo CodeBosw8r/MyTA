@@ -27,13 +27,19 @@ public class EngineConfigIniLoader {
 
     public EngineConfig loadEngineConfig(String iniFile) {
 
+        File configFile = new File(iniFile);
+
+        return this.loadEngineConfig(configFile);
+
+    }
+
+    public EngineConfig loadEngineConfig(File configFile) {
+
         EngineConfig engineConfig = new EngineConfig();
 
         Map<String, Map<String, String>> iniConfig = new HashMap<String, Map<String, String>>(0);
 
-        File configFile = new File(iniFile);
-
-        if (configFile.exists()) {
+        if ((configFile != null) && configFile.exists()) {
 
             FileInputStream inputStream = null;
 

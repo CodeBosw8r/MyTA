@@ -90,30 +90,31 @@ public class ContextListener implements ServletContextListener {
 
         }
 
+        File configFile = new File("/etc/myta/config.ini");
+
         if (env.containsKey("CONFIG_FILE") && (env.get("CONFIG_FILE") != null) && !env.get("CONFIG_FILE").equals("")) {
 
             String configFileParam = env.get("CONFIG_FILE");
 
-            File configFile = new File(configFileParam);
+            configFile = new File(configFileParam);
 
-            if (configFile.exists()) {
+        }
 
-                EngineConfigIniLoader engineConfigIniLoader = new EngineConfigIniLoader();
+        if (configFile != null) {
 
-                EngineConfig loadedEngineConfig = engineConfigIniLoader.loadEngineConfig(configFileParam);
+            EngineConfigIniLoader engineConfigIniLoader = new EngineConfigIniLoader();
 
-                if (loadedEngineConfig != null) {
+            EngineConfig loadedEngineConfig = engineConfigIniLoader.loadEngineConfig(configFile);
 
-                    if (loadedEngineConfig.getDkimKeyMapping() != null) {
+            if (loadedEngineConfig != null) {
 
-                        engineConfig.setDkimKeyMapping(loadedEngineConfig.getDkimKeyMapping());
+                if (loadedEngineConfig.getDkimKeyMapping() != null) {
 
-                    }
+                    engineConfig.setDkimKeyMapping(loadedEngineConfig.getDkimKeyMapping());
 
                 }
 
             }
-
         }
 
         Engine engine = new Engine();

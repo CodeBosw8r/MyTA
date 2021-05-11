@@ -14,9 +14,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import myta.exception.MessageParseException;
 import myta.message.model.EmailAddress;

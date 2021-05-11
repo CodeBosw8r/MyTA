@@ -172,24 +172,23 @@ public class MessageComposer {
 
     }
 
-    public Multipart createMultipartAlternative(String textbody, String htmlbody) throws MessagingException {
+    public Multipart createMultipartAlternative(String text, String html) throws MessagingException {
 
-        Multipart mp = new MimeMultipart("alternative");
+        Multipart htmlAndTextMultipart = new MimeMultipart("alternative");
 
         // create and fill the text message part
-        MimeBodyPart mbp1 = new MimeBodyPart();
-        mbp1.setText(textbody);
-        mbp1.setContent(textbody, "text/plain");
+        // set text
+        MimeBodyPart textBodyPart = new MimeBodyPart();
+        textBodyPart.setContent(text, "text/plain; charset=UTF-8");
 
-        mp.addBodyPart(mbp1);
+        htmlAndTextMultipart.addBodyPart(textBodyPart);
 
         // create and fill the html message part
-        MimeBodyPart mbp2 = new MimeBodyPart();
-        mbp2.setContent(htmlbody, "text/html");
+        MimeBodyPart htmlBodyPart = new MimeBodyPart();
+        htmlBodyPart.setContent(html, "text/html; charset=utf-8");
+        htmlAndTextMultipart.addBodyPart(htmlBodyPart);
 
-        mp.addBodyPart(mbp2);
-
-        return mp;
+        return htmlAndTextMultipart;
 
     }
 

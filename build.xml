@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="war" xmlns:ivy="antlib:org.apache.ivy.ant">
 
-	<taskdef name="xpath" classname="net.uworks.andariel.XPath" />
 	<property name="module.name" value="MyTA" />
 	
     <fail message="Ant 1.10.4+ is required!">
@@ -14,7 +13,9 @@
 
 	<target name="init">
 		
-		<xpath file="ivy.xml" expression="//info/@revision" outputproperty="module.version" />
+        <xmlproperty file="ivy.xml" collapseAttributes="true" />
+	    <property name="module.version" value="${ivy-module.info.revision}" />
+		
 		<mkdir dir="build" />
 		<property name="lib.dir" value="build/lib" />
 
@@ -119,10 +120,5 @@
             <classes dir="build/classes"/>
         </war>
     </target>
-
-	<target name="publish" depends="init,war">
-		<ivy:publish resolver="local" deliverivypattern="dist/[artifact]-[revision].[ext]" artifactspattern="dist/grip-[module]-[revision].[ext]" pubrevision="${module.version}">
-		</ivy:publish>
-	</target>
 
 </project>

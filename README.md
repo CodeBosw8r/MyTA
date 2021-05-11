@@ -46,8 +46,8 @@ $myTAUrl = 'http://localhost:8080/MyTA/postMessage';
 $msg = array();
 
 $msg['from'] = 'Firstname Lastname <info@example.com>';
-$msg['to'] = 'Mr Recipient <recipient@example.com>';
-$msg['subject'] = $schedule->getsubject();
+$msg['to'] = 'Some Recipient <recipient@example.com>';
+$msg['subject'] = 'This is the subject';
 $msg['textBody'] = 'Plaintext body';
 $msg['htmlBody'] = '<html>This is the <b>HTML</b> body</html>';
 

@@ -13,7 +13,7 @@
 
         <dependency org="org.junit.platform" name="junit-platform-console-standalone" conf="test->default" rev="1.7.1" />
         <dependency org="org.junit.jupiter" name="junit-jupiter" conf="test->default" rev="5.7.1" />
-        <dependency org="javax.servlet" name="servlet-api" conf="build->default" rev="2.5" />
+        <dependency org="javax.servlet" name="servlet-api" conf="build,test->default" rev="2.5" />
         <dependency org="log4j" name="log4j" rev="1.2.14" />
         <dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.9.2" />
         <dependency org="com.sun.mail" name="jakarta.mail" rev="2.0.1" />

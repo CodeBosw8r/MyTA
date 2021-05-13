@@ -16,4 +16,11 @@ public class SmtpConfiguration {
         this.host = host;
     }
 
+    @Override
+    public String toString() {
+
+        return this.host;
+
+    }
+
 }

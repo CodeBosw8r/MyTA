@@ -3,11 +3,8 @@ version: '3'
 services:
   serve:
     build: .
-#    volumes:
-#      - ./src:/usr/local/tomcat/webapps
     ports:
       - "8080:8080"
     environment:
-      RELAY_HOST: '192.168.2.2'
-#      RELAY_HOST: 'host.docker.internal'
+      RELAY_HOST: 'host.docker.internal'
     command: [ "/usr/local/tomcat/bin/catalina.sh", "run" ]

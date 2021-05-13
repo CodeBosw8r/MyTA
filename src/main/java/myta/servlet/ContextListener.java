@@ -9,6 +9,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import myta.config.model.EngineConfig;
 import myta.config.model.SmtpConfiguration;
 import myta.config.service.EngineConfigIniLoader;
@@ -116,6 +119,10 @@ public class ContextListener implements ServletContextListener {
 
             }
         }
+
+        Logger logger = LogManager.getLogger(this.getClass());
+
+        logger.info("Using relay servers: " + engineConfig.getRelayServers().toString());
 
         Engine engine = new Engine();
         engine.initialize(engineConfig);

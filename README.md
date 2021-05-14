@@ -6,6 +6,14 @@ MyTA is a Mail Transfer Agent (MTA) with an HTTP API. It takes mail messages in 
 
 Download the latest WAR file and deploy it in your Servlet Container like Tomcat or Jetty.
 
+# Running from Docker
+
+Copy Dockerfile and docker-compose.yml and simply run the following command:
+
+```
+docker-compose up
+```
+
 # Configuration
 
 The following environment variables can be set:

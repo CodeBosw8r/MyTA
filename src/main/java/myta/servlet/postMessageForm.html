@@ -45,6 +45,10 @@
 			<dd>
 				<input type="text" name="returnPath">
 			</dd>
+			<dt>API key:</dt>
+			<dd>
+				<input type="text" name="apiKey">
+			</dd>
 			<dd>
 				<input type="submit" value="Submit">
 			</dd>
@@ -74,6 +78,8 @@
 	       const form = e.target;
 	       
 	       const message = {};
+	       
+	       let apiKey = '';
 	       
 	       message.from = null;
 	       message.recipients = [];
@@ -130,6 +136,10 @@
 
                            message.extraHeaders.push(value);
 
+                       } else if (elementName == 'apiKey') {
+
+                           apiKey = value;
+
                        }
                        
                    }
@@ -142,6 +152,11 @@
 	       var theUrl = document.location;
 	       xmlhttp.open("POST", theUrl);
 	       xmlhttp.setRequestHeader("Content-Type", "application/json");
+	       
+	       if (apiKey != '') {
+		       xmlhttp.setRequestHeader("X-API-Key", apiKey);
+	       }
+	       
 	       xmlhttp.send(JSON.stringify(message));
 	       
 	       console.log('message:', message);

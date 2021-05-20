@@ -41,6 +41,8 @@ public class Engine {
 
     private Map<String, DkimKey>                       dkimKeyMapping;
 
+    private String                                     apiKey;
+
     private long                                       timeInitializeFinished;
 
     public Engine() {
@@ -74,6 +76,8 @@ public class Engine {
             incomingMessageQueueProcessingThread.start();
 
         }
+
+        this.apiKey = engineConfig.getApiKey();
 
         this.timeInitializeFinished = System.currentTimeMillis() / 1000;
         this.isInitialized = true;
@@ -136,6 +140,10 @@ public class Engine {
 
     public Map<String, DkimKey> getDkimKeyMapping() {
         return this.dkimKeyMapping;
+    }
+
+    public String getApiKey() {
+        return this.apiKey;
     }
 
     public int getNumWorkers() {

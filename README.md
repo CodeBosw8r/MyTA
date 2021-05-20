@@ -18,12 +18,13 @@ docker-compose up
 
 The following environment variables can be set:
 
-| name                | description                                            | default              |
-| ------------------- | ------------------------------------------------------ | -------------------- |
-| NUM_WORKERS         | the number of threads processing incoming messages     | 2                    |
-| INCOMING_QUEUE_SIZE | the internal incoming message queue size               | 1000                 |
-| RELAY_HOST          | the host or hosts (comma separated) to deliver mail to | localhost            |
-| CONFIG_FILE         | config file (only needed for DKIM settings)            | /etc/myta/config.ini |
+| name                | description                                                  | default              |
+| ------------------- | ------------------------------------------------------------ | -------------------- |
+| NUM_WORKERS         | the number of threads processing incoming messages           | 2                    |
+| INCOMING_QUEUE_SIZE | the internal incoming message queue size                     | 1000                 |
+| RELAY_HOST          | the host or hosts (comma separated) to deliver mail to       | localhost            |
+| CONFIG_FILE         | config file (only needed for DKIM settings)                  | /etc/myta/config.ini |
+| API_KEY             | if set, requests must pass this value via 'X-API-KEY' header | <none>               |
 
 # DKIM signing
 
@@ -125,6 +126,21 @@ Here is a full example of a valid json message request body, including extra rec
         }
     ]
 }
+```
+
+# API Key
+
+When an API key is set, a ``X-API-Key`` request header must be set with the expected key: 
+
+```php
+$myTAUrl = 'http://localhost:8080/MyTA/postMessage';
+$apiKey = "YOUR_API_KEY';
+...
+@file_get_contents($myTAUrl, null, stream_context_create(array(
+    'http' => array(
+    'method' => 'POST',
+    'header' => array('Content-Type: application/json'."\r\n" . 'X-API-Key: '. $apiKey . "\r\n" . 'Content-Length: ' . strlen($requestBody) . "\r\n"),
+    'content' => $requestBody))));
 ```
 
 # Performance tuning

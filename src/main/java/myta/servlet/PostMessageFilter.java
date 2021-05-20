@@ -33,6 +33,8 @@ public class PostMessageFilter implements Filter {
 
     private IncomingMessageParser       incomingMessageParser;
 
+    private String                      apiKey;
+
     @SuppressWarnings("unchecked")
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
@@ -45,6 +47,31 @@ public class PostMessageFilter implements Filter {
 
         // make sure this is only done using post method
         if (httpServletRequest.getMethod().equals("POST")) {
+
+            if (this.apiKey != null) {
+
+                String authorisationHeaderValue = this.getApiKeyValue(httpServletRequest);
+
+                boolean validApiKey = false;
+
+                if (this.apiKey.equals(authorisationHeaderValue)) {
+
+                    validApiKey = true;
+
+                }
+
+                if (!validApiKey) {
+
+                    Exception exception = new Exception("Access denied");
+
+                    int statusCode = 403; // Forbidden
+                    this.sendHttpExceptionResponse(httpServletResponse, statusCode, exception);
+
+                    return;
+
+                }
+
+            }
 
             Object requestObject = this.parseJsonRequestObject(httpServletRequest);
 
@@ -181,10 +208,22 @@ public class PostMessageFilter implements Filter {
         if ((engineObject != null) && (engineObject instanceof Engine)) {
 
             Engine engine = (Engine) engineObject;
+
             this.setIncomingMessageQueueManager(engine.getIncomingMessageQueueManager());
+
+            this.apiKey = engine.getApiKey();
+
         }
 
         this.incomingMessageParser = new IncomingMessageParser();
+
+    }
+
+    public String getApiKeyValue(HttpServletRequest httpServletRequest) {
+
+        String apiKeyValue = httpServletRequest.getHeader("X-API-Key");
+
+        return apiKeyValue;
 
     }
 

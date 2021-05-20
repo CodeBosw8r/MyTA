@@ -17,6 +17,8 @@ public class EngineConfig {
 
     private Map<String, DkimKey>    dkimKeyMapping;
 
+    private String                  apiKey;
+
     public EngineConfig() {
 
         this.numWorkers = 2;
@@ -28,6 +30,8 @@ public class EngineConfig {
 
         Map<String, DkimKey> dkimKeyMapping = new HashMap<String, DkimKey>();
         this.dkimKeyMapping = dkimKeyMapping;
+
+        this.apiKey = null;
 
     }
 
@@ -61,6 +65,14 @@ public class EngineConfig {
 
     public void setDkimKeyMapping(Map<String, DkimKey> dkimMapping) {
         this.dkimKeyMapping = dkimMapping;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
 }

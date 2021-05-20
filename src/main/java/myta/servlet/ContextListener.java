@@ -120,6 +120,16 @@ public class ContextListener implements ServletContextListener {
             }
         }
 
+        String apiKey = null;
+
+        if (env.containsKey("API_KEY") && (env.get("API_KEY") != null) && !env.get("API_KEY").equals("")) {
+
+            apiKey = env.get("API_KEY");
+
+        }
+
+        engineConfig.setApiKey(apiKey);
+
         Logger logger = LogManager.getLogger(this.getClass());
 
         logger.info("Using relay servers: " + engineConfig.getRelayServers().toString());

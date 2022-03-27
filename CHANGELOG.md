@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [1.1.1] - 2022-03-27
+
+### Fixed
+
+- Updated jackson-databind to fix CVE-2020-36518
+
 ## [1.1.0] - 2021-05-14
 
 ### Added

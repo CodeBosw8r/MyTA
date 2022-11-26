@@ -8,7 +8,7 @@ Download the latest WAR file and deploy it in your Servlet Container like Tomcat
 
 # Running from Docker
 
-Copy Dockerfile and docker-compose.yml and simply run the following command:
+Check out the repository, edit docker-compose.yml to your taste and run the following command:
 
 ```
 docker-compose up
@@ -50,7 +50,7 @@ The value consists of 3 parts, separated by commas:
 Example PHP code:
 
 ```php
-$myTAUrl = 'http://localhost:8080/MyTA/postMessage';
+$myTAUrl = 'http://localhost:8080/postMessage';
 
 $msg = array();
 
@@ -133,7 +133,7 @@ Here is a full example of a valid json message request body, including extra rec
 When an API key is set, a ``X-API-Key`` request header must be set with the expected key: 
 
 ```php
-$myTAUrl = 'http://localhost:8080/MyTA/postMessage';
+$myTAUrl = 'http://localhost:8080/postMessage';
 $apiKey = "YOUR_API_KEY';
 ...
 @file_get_contents($myTAUrl, null, stream_context_create(array(
@@ -149,7 +149,7 @@ When sending messages in bulk, MyTA will use multiple workers to generate Mime m
 
 # Monitoring
 
-You can monitor MyTA status by requesting /MyTA/status?output=nvp to generate a plaintext status page with name/value pairs like this:
+You can monitor MyTA status by requesting /status?output=nvp to generate a plaintext status page with name/value pairs like this:
 
 ```text
 status:ok numWorkers:6 incomingQueueSize:0 incomingQueueMaxSize:1000 mailsSent:19985 freeMemory:146750424 totalMemory:158334976 maxMemory:1836580864 uptime:17161

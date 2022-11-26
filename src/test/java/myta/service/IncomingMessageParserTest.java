@@ -17,8 +17,6 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import myta.exception.MessageParseException;
 import myta.message.model.EmailAddress;
 import myta.message.model.Header;
@@ -54,26 +52,17 @@ class IncomingMessageParserTest {
 
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, Object> loadMessageRequest(String messageFile) throws IOException {
 
         Map<String, Object> message = null;
-
-        Object obj = null;
 
         File file = new File("src/test/resources/request/" + messageFile);
 
         FileInputStream inputStream = new FileInputStream(file);
 
-        ObjectMapper mapper = new ObjectMapper();
+        JsonMapParser parser = new JsonMapParser();
 
-        obj = mapper.readValue(inputStream, Object.class);
-
-        if (obj != null) {
-
-            message = (Map<String, Object>) obj;
-
-        }
+        message = parser.readJsonMap(inputStream);
 
         return message;
 

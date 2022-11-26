@@ -19,13 +19,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import myta.core.Engine;
 import myta.message.model.Message;
 import myta.queue.model.IncomingMessageQueueEntry;
 import myta.queue.service.IncomingMessageQueueManager;
 import myta.service.IncomingMessageParser;
+import myta.service.JsonMapParser;
 
 public class PostMessageFilter implements Filter {
 
@@ -171,6 +170,8 @@ public class PostMessageFilter implements Filter {
 
     public void showPostMessageForm(HttpServletResponse httpServletResponse) throws IOException {
 
+        httpServletResponse.setContentType("text/html; charset=UTF-8");
+
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("myta/servlet/postMessageForm.html");
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
@@ -247,13 +248,11 @@ public class PostMessageFilter implements Filter {
 
     public Object parseJsonRequestBody(InputStream inputStream) throws IOException {
 
-        Object obj = null;
+        JsonMapParser parser = new JsonMapParser();
 
-        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> parsedMap = parser.readJsonMap(inputStream);
 
-        obj = mapper.readValue(inputStream, Object.class);
-
-        return obj;
+        return parsedMap;
 
     }
 

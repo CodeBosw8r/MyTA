@@ -7,9 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added 
+### Added
 
 ### Fixed
+
+## [1.3.0] - 2025-06-21
+
+### Changed
+
+- now using apache commons-configuration2 over ini4j
+
+## [1.2.0] - 2022-11-26
+
+### Changed
+
+- now using jakarta-json over jackson
 
 ## [1.1.1] - 2022-03-27
 

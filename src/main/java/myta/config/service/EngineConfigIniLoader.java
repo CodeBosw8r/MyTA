@@ -6,19 +6,23 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.apache.commons.configuration2.INIConfiguration;
+import org.apache.commons.configuration2.SubnodeConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
-import org.ini4j.Ini;
-import org.ini4j.InvalidFileFormatException;
-import org.ini4j.Profile.Section;
 
 import myta.config.model.EngineConfig;
 import myta.dkim.model.DkimKey;
@@ -46,18 +50,21 @@ public class EngineConfigIniLoader {
             try {
                 inputStream = new FileInputStream(configFile);
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
             if (inputStream != null) {
 
-                iniConfig = this.loadIniFile(inputStream);
+                try {
+
+                    iniConfig = this.loadIniFile(inputStream);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
 
@@ -79,35 +86,29 @@ public class EngineConfigIniLoader {
 
     }
 
-    public Map<String, Map<String, String>> loadIniFile(InputStream inputStream) {
+    public Map<String, Map<String, String>> loadIniFile(InputStream inputStream)
+            throws IOException, ConfigurationException {
 
         Map<String, Map<String, String>> iniFile = null;
 
-        Ini ini = null;
+        Reader reader = new InputStreamReader(inputStream);
 
-        try {
-            ini = new Ini(inputStream);
-        } catch (InvalidFileFormatException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        INIConfiguration iniConfiguration = new INIConfiguration();
+        iniConfiguration.read(reader);
 
-        if (ini != null) {
+        Set<String> sections = iniConfiguration.getSections();
 
-            for (Entry<String, Section> iniEntry : ini.entrySet()) {
+        if (sections != null) {
 
-                Section section = iniEntry.getValue();
-
-                String sectionName = section.getName();
+            for (String sectionName : sections) {
 
                 if (iniFile == null) {
 
-                    iniFile = new LinkedHashMap<String, Map<String, String>>(ini.size());
+                    iniFile = new LinkedHashMap<String, Map<String, String>>(sections.size());
 
                 }
+
+                SubnodeConfiguration section = iniConfiguration.getSection(sectionName);
 
                 if (!iniFile.containsKey(sectionName)) {
 
@@ -115,10 +116,12 @@ public class EngineConfigIniLoader {
 
                 }
 
-                for (Entry<String, String> sectionEntry : section.entrySet()) {
+                Iterator<String> keyIterator = section.getKeys();
 
-                    iniFile.get(sectionName).put(sectionEntry.getKey(), sectionEntry.getValue());
-
+                while (keyIterator.hasNext()) {
+                    String key = keyIterator.next();
+                    String value = section.getProperty(key).toString();
+                    iniFile.get(sectionName).put(key.replace("..", "."), value);
                 }
 
             }

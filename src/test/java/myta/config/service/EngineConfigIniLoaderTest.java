@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ import org.junit.platform.commons.annotation.Testable;
 public class EngineConfigIniLoaderTest {
 
     @Test
-    public void testLoadIniFile() throws IOException {
+    public void testLoadIniFile() throws Exception {
 
         Map<String, Map<String, String>> loadedIniFile = this.loadIniFile("config-valid-dkim-mapping.ini");
 
@@ -35,12 +34,14 @@ public class EngineConfigIniLoaderTest {
         assertTrue(loadedIniFile.get("dkim-mapping").containsKey("info@example.com"));
         assertTrue(loadedIniFile.get("dkim-mapping").containsKey("*@example.com"));
 
-        assertEquals("example.com,someselector,/path/to/some/key.pem", loadedIniFile.get("dkim-mapping").get("info@example.com"));
-        assertEquals("example.com,wildcard,/path/to/wildcard/key.pem", loadedIniFile.get("dkim-mapping").get("*@example.com"));
+        assertEquals("example.com,someselector,/path/to/some/key.pem",
+                loadedIniFile.get("dkim-mapping").get("info@example.com"));
+        assertEquals("example.com,wildcard,/path/to/wildcard/key.pem",
+                loadedIniFile.get("dkim-mapping").get("*@example.com"));
 
     }
 
-    public Map<String, Map<String, String>> loadIniFile(String iniFile) throws IOException {
+    public Map<String, Map<String, String>> loadIniFile(String iniFile) throws Exception {
 
         Map<String, Map<String, String>> loadedIniFile = null;
 
